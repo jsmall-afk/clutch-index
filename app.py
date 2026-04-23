@@ -1,5 +1,10 @@
 import streamlit as st
 import pandas as pd
+import unicodedata
+
+def strip_accents(s):
+   return ''.join(c for c in unicodedata.normalize('NFD', s)
+                  if unicodedata.category(c) != 'Mn')
 
 # 1. Set up the page
 st.set_page_config(page_title="Clutch Index Dashboard", layout="wide")
