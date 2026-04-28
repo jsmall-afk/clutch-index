@@ -1,5 +1,11 @@
 import streamlit as st
 import pandas as pd
+import unicodedata
+
+# Keep this! It's the translator you have in your terminal
+def strip_accents(s):
+   return ''.join(c for c in unicodedata.normalize('NFD', str(s))
+                  if unicodedata.category(c) != 'Mn')
 
 # 1. Set up the page
 st.set_page_config(page_title="Clutch Index Dashboard", layout="wide")
@@ -24,7 +30,14 @@ with tab1:
     player_search = st.text_input("Enter a player name (e.g., Messi):")
 
     if player_search:
-        player_df = master_df[master_df['player'].str.contains(player_search, case=False, na=False)]
+            # Clean your search text
+        search_clean = strip_accents(player_search).replace("'", "").lower().strip()
+        
+        # Clean the data names while searching
+        player_df = master_df[
+            master_df['player'].apply(lambda x: strip_accents(x).replace("'", "").lower())
+            .str.contains(search_clean, case=False, na=False)
+        ]    
         
         if player_df.empty:
             st.warning("No players found. Try checking the spelling!")
@@ -146,3 +159,5 @@ with tab2:
     top_efficient['avg_cis_per_shot'] = top_efficient['avg_cis_per_shot'].round(4)
     top_efficient.index = range(1, len(top_efficient) + 1)
     st.dataframe(top_efficient, use_container_width=True)
+
+    #python3 -m streamlit run app.py
