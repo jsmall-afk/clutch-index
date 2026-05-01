@@ -52,7 +52,7 @@ with tab1:
                 Total_Shots=('outcome', 'count'),
                 Goals=('outcome', lambda x: (x == 'Goal').sum()),
                 Total_CIS=('CI:S', 'sum'),
-                Avg_CIS=('CI:S', 'mean')
+                CIS_Per_Shot=('CI:S', 'mean')
             ) 
             # (Note: We do NOT use .reset_index() here because Streamlit formats multi-index groups beautifully!)
             
